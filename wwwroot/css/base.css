@@ -1,0 +1,124 @@
+:root {
+  font-size: 22px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+}
+
+form {
+  display: grid;
+  justify-content: flex-start;
+  grid-gap: 15px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  gap: 20px;
+}
+
+header {
+  padding: 10px 40px;
+  display: flex;
+  gap: 20px;
+  background-color: rgb(172, 194, 237);
+  color: rgb(33, 33, 33);
+}
+
+input[type="submit"] {
+  border: 2px solid black;
+  padding: 5px 10px;
+  font-size: 20px;
+  background-color: aquamarine;
+  border-radius: 2px;
+}
+
+header > div {
+  margin-top: 15px;
+}
+
+header > div > div {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+}
+
+main {
+  padding: 0 40px;
+}
+
+.welcome {
+  margin-bottom: 15px;
+  font-style: italic;
+}
+
+h2,
+/* h3, */
+h4,
+h5,
+h6 {
+  font-weight: 400;
+}
+
+.logo {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+}
+
+footer {
+  padding: 0 40px;
+  margin-top: auto;
+  background-color: rgb(172, 194, 237);
+  color: rgb(33, 33, 33);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+thead td {
+  font-weight: 600;
+}
+
+td {
+  border: 2px solid black;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+td:first-child {
+  font-weight: 600;
+}
+
+.create-car {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+label {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.create-car button {
+  width: 100%;
+}
+
+.cars h3 {
+  margin: 10px 0;
+}
+
+.user-info {
+  display: flex;
+  gap: 35px;
+}

@@ -1,0 +1,23 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div class="text-center">
+    <h1>Welcome</h1>
+    @{
+    var auth = Model.Context?.Session.GetInt32("UserId") != null;
+}
+
+@if (!auth)
+{
+    <p>Let's go' <a asp-page="/login">Login</a>.</p>
+    <p>Or want to <a asp-page="/register">Register</a>.</p>
+}
+else
+{
+    <p>Go shopping! <a asp-page="/Shop">Shop</a>.</p>
+    <p>Wanna leave? <a asp-page="/login" asp-page-handler="Leave">Log out</a>.</p>
+}
+</div>

@@ -1,0 +1,169 @@
+﻿@page "{handler?}"
+@using Microsoft.EntityFrameworkCore
+@using Java.Contexts
+@model Java.Pages.ShopModel
+@{
+    var sessionId = Model.HttpContextAccessor?.HttpContext?.Session.GetInt32("UserId");
+    var user = Model.ApplicationContext.Users.AsQueryable().FirstOrDefault(x => x.Id == sessionId);
+    if (user == null)
+    {
+        //error
+    }
+}
+
+@if (true)
+{
+    @if (user.IsManager)
+    {
+        <h2 class="welcome">Привет, администратор!</h2>
+        <form method="POST" class="create-car">
+            <h3>Зарегистрировать машину</h3>
+            <input name="type" value="create-car" hidden/>
+            <label>
+                <span> Название </span>
+                <input name="name"/>
+            </label>
+            <label>
+                <span> Цвет </span>
+                <input name="color"/>
+            </label>
+            <label>
+                <span> Серийный номер </span>
+                <input name="serial"/>
+            </label>
+            <label>
+                <span> Состояние </span>
+                <input name="state"/>
+            </label>
+            <label>
+                <span> Цена аренды (день) руб.</span>
+                <input name="price" type="number"/>
+            </label>
+            <input type="submit" value="Зарегистрировать машину" asp-page-handler="AddCar"/>
+        </form>
+    }
+    else
+    {
+        <h2 class="welcome">Приветствуем Вас на стартовой странице нашего сайта!</h2>
+    }
+
+    <div class="cars">
+        <h3>Машины на аренду</h3>
+        <table>
+            <thead>
+            <tr>
+                <td>ID</td>
+                <td>Название</td>
+                <td>Цвет</td>
+                <td>Серийный номер</td>
+                <td>Состояние</td>
+                <td>Аренда (день), руб</td>
+                <td>Действие</td>
+            </tr>
+            </thead>
+            <tbody>
+            @{
+                var c = Model.ApplicationContext.Rents.AsQueryable().Select(x => x.CarId).ToList();
+                var coll = Model.ApplicationContext.Cars.Where(x => c.All(y => y != x.Id));
+            }
+            @foreach (var car in coll)
+            {
+                <tr>
+                    <td>@car.Id</td>
+                    <td>@car.Name</td>
+                    <td>@car.Color</td>
+                    <td>@car.Serial</td>
+                    <td>@car.State</td>
+                    <td>@car.Price</td>
+                    <td>
+                        @if (user.IsManager)
+                        {
+                            <form method="POST">
+                                <input name="carId" value=@car.Id hidden/>
+                                <input type="submit" value="Удалить машину" asp-page-handler="DeleteCar"/>
+                            </form>
+                        }
+                        else
+                        {
+                            <form method="POST">
+                                <input name="type" value="book-car" hidden/>
+                                <label>
+                                    На сколько дней
+                                    <input name="days" value="1" type="number"/>
+                                    <input name="carId" value=@car.Id hidden type="number"/>
+                                </label>
+                                <input type="submit" value="Арендовать машину" asp-page-handler="RentCar"/>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+
+
+    //if manager =>all
+    //if user only for himself
+
+    <div class="cars">
+        <h3>Арендованные машины</h3>
+        <table>
+            <thead>
+            <tr>
+                <td>ID</td>
+                <td>Название</td>
+                <td>Цвет</td>
+                <td>Серийный номер</td>
+                <td>Состояние</td>
+                <td>Аренда (день), руб</td>
+                @if (user.IsManager)
+                {
+                    <td>Кто арендовал</td>
+                }
+                <td>На сколько дней</td>
+                <td>Общая цена</td>
+                @if (!user.IsManager)
+                {
+                    <td>Действия</td>
+                }
+            </tr>
+            </thead>
+            <tbody>
+            @{
+                var cars = Model.ApplicationContext.Cars.AsQueryable().Select(x => x).ToList();
+            }
+            @foreach (var rent in Model.ApplicationContext.Rents)
+            {
+                var car = cars.FirstOrDefault(x => x.Id == rent.CarId);
+                if (car == null) continue;
+                <tr>
+                    <td>@rent.CarId</td>
+                    <td>@car.Name</td>
+                    <td>@car.Color</td>
+                    <td>@car.Serial</td>
+                    <td>@car.State</td>
+                    <td>@car.Price</td>
+                    @if (user.IsManager)
+                    {
+                        <td>@user.Name</td>
+                    }
+                    <td>@rent.Days</td>
+                    <td>@(car.Price*rent.Days)</td>
+                    @if (!user.IsManager)
+                    {
+                        <td>
+                            <form method="POST">
+                                <input name="carId" value=@rent.CarId hidden/>
+                                <input type="submit" value="Закончить аренду" asp-page-handler="EndRentCar"/>
+                            </form>
+                        </td>
+                    }
+                </tr>
+            }
+
+            </tbody>
+        </table>
+    </div>
+}
